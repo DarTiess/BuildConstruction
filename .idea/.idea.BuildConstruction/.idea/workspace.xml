@@ -10,6 +10,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/30adf90198bc4c4b83910c6fb1877998174000/de/81d0b36a/Camera.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Grid/GroundSpawner.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Infrastructure/Installers/Settings/BuildSettingsInstaller.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Infrastructure/Installers/Settings/GroundSettingsInstaller.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -85,7 +86,7 @@
       <workItem from="1741884504026" duration="6487000" />
       <workItem from="1741891095087" duration="17000" />
       <workItem from="1741933670868" duration="1080000" />
-      <workItem from="1741957605258" duration="3712000" />
+      <workItem from="1741957605258" duration="13513000" />
     </task>
     <servers />
   </component>

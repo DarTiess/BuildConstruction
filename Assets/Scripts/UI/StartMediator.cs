@@ -1,6 +1,5 @@
 using System;
 using Infrastructure.Extension;
-using Infrastructure.Services;
 using UnityEngine;
 
 namespace UI
@@ -8,11 +7,24 @@ namespace UI
     public class StartMediator: MonoBehaviour, IMediator, IDisposable
     {
         [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private StartWindow _startWindow;
         public event Action<IMediator> OnCleanUp;
         public GameObject GameObject => gameObject;
+        public event Action OnStartGame;
 
-        public void Construct(Messenger messenger)
+        public void Construct()
         {
+           
+        }
+
+        private void Start()
+        {
+            _startWindow.Start += StartGame;
+        }
+
+        private void StartGame()
+        {
+           OnStartGame?.Invoke();
         }
 
         public void Show() => _canvasGroup.Show();
@@ -21,6 +33,7 @@ namespace UI
 
         public void Dispose()
         {
+            _startWindow.Start -= StartGame;
         }
     }
 }

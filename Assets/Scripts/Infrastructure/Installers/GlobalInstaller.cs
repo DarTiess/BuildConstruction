@@ -6,11 +6,8 @@ public class GlobalInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        CreateServiceLocator();
-    }
-
-    private void CreateServiceLocator()
-    {
         Container.BindInterfacesAndSelfTo<ServiceLocator>().AsSingle();
+        Container.BindInterfacesAndSelfTo<Messenger>().AsSingle();
+        Container.BindInterfacesAndSelfTo<MediatorFactory>().AsSingle();
     }
 }

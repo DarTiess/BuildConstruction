@@ -9,30 +9,34 @@ namespace Infrastructure.Services
 {
     public class MediatorFactory : IService
 	{
-		private const string AdditionalPath = "GameData/GUI/";
-		private readonly ServiceLocator _serviceLocator;
+		private const string AdditionalPath = "GameData/UI/";
 		private readonly Dictionary<Type, IMediator> _mediators;
+		private Transform _parent;
+		private readonly Dictionary<string, Object> _completedCashe = new();
+		private Messenger _messenger;
+		private readonly BuildSettings _buildSettings;
 
-		public MediatorFactory(ServiceLocator serviceLocator)
+
+		public MediatorFactory(BuildSettings buildSettings)
 		{
-			_serviceLocator = serviceLocator;
+			_buildSettings = buildSettings;
 			_mediators = new Dictionary<Type, IMediator>();
 		}
 
-		private async Task<TMediator> Get<TMediator>() where TMediator : MonoBehaviour, IMediator
+		public async Task<TMediator> Get<TMediator>() where TMediator : MonoBehaviour, IMediator
 		{
 			if (_mediators.TryGetValue(typeof(TMediator), out var mediator))
 				return mediator as TMediator;
 			
 
 			TMediator mediatorGo = await Load<TMediator>(AdditionalPath + typeof(TMediator).Name);
-			TMediator instance = Object.Instantiate(mediatorGo);
+			TMediator instance = Object.Instantiate(mediatorGo, _parent);
 			InitMediator(instance);
 			_mediators.Add(instance.GetType(), instance);
 			instance.OnCleanUp += CleanUp;
 			return instance;
 		}
-		private readonly Dictionary<string, Object> _completedCashe = new();
+
 		public async Task<T> Load<T>(string address) where T : Object
 		{
 			if (_completedCashe.TryGetValue(address, out Object loadedObject))
@@ -59,10 +63,10 @@ namespace Infrastructure.Services
 			switch (instance)
 			{
 				case StartMediator startMediator:
-					startMediator.Construct(_serviceLocator.Get<Messenger>());
+					startMediator.Construct();
 					break;
 				case BuildMediator buildMediator:
-					buildMediator.Construct();
+					buildMediator.Construct(_buildSettings.BuildConfigs,_messenger);
 					break;
 			}
 		}
@@ -72,9 +76,6 @@ namespace Infrastructure.Services
 			var result = await Get<TMediator>();
 			foreach (var mediatorPair in _mediators)
 			{
-				if (suppressAllWindows == false)
-					continue;
-
 				mediatorPair.Value.Hide();
 			}
 			
@@ -88,6 +89,11 @@ namespace Infrastructure.Services
 			if (_mediators.ContainsKey(mediator.GetType()))
 				_mediators.Remove(mediator.GetType());
 		}
-		
+
+		public void Init(Transform canvas, Messenger messenger )
+		{
+			_parent = canvas;
+			_messenger = messenger;
+		}
 	}
 }
