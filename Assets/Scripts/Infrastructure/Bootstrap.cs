@@ -1,4 +1,5 @@
 using System;
+using CameraFollow;
 using Grid;
 using Infrastructure.Services;
 using UI;
@@ -11,27 +12,37 @@ namespace Infrastructure
     {
         [SerializeField] private Transform _canvas;
         [SerializeField] private GridBuilder _cardGridBuilder;
-        private GroundSpawner _groundRandomSpawner;
+        private GroundFactory _groundRandomFactory;
         private UIRoot _uiRoot;
         private MediatorFactory _mediatorFactory;
         private Messenger _messenger;
+        private CamFollow _camera;
+        private GroundSettings _groundSettings;
 
         [Inject]
-        public void Construct(MediatorFactory mediatorFactory, Messenger messenger)
+        public void Construct(MediatorFactory mediatorFactory, Messenger messenger, GroundSettings groundSettings)
         {
             _mediatorFactory = mediatorFactory;
             _messenger = messenger;
+            _groundSettings = groundSettings;
         }
         private void Awake()
         {
             CreateCardSpawner();
             RegisterMessenger();
             CreateUiRoot();
+            SetCameraPosition();
+        }
+
+        private void SetCameraPosition()
+        {
+            _camera = Camera.main.GetComponent<CamFollow>();
+            _camera.Init(_groundSettings.GridSize);
         }
 
         private void CreateCardSpawner()
         {
-            _groundRandomSpawner = new GroundSpawner(_cardGridBuilder);
+            _groundRandomFactory = new GroundFactory(_cardGridBuilder);
         }
 
         private void RegisterMessenger()

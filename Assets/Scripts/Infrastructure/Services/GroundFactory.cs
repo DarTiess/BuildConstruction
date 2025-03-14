@@ -6,11 +6,11 @@ using Random = UnityEngine.Random;
 namespace Grid
 {
     [Serializable]
-    public class GroundSpawner: IGroundSpawner
+    public class GroundFactory: IGroundSpawner
     {
         private GridBuilder _groundBuilder;
         
-        public GroundSpawner(GridBuilder groundBuilder)
+        public GroundFactory(GridBuilder groundBuilder)
         {
             _groundBuilder = groundBuilder;
             _groundBuilder.FillGrid();
