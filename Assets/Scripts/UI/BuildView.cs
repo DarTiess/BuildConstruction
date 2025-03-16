@@ -37,5 +37,10 @@ namespace UI
             _backImage.sprite = _activeSprite;
             Clicked?.Invoke(_type);
         }
+
+        public void UnClicked()
+        {
+            _backImage.sprite = _inactiveSprite;
+        }
     }
 }

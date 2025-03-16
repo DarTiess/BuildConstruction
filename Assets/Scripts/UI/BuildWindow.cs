@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Build;
 using Card;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UI
@@ -14,8 +16,11 @@ namespace UI
         [SerializeField] private Transform _container;
         private List<BuildView> _buildViewList=new ();
         private List<BuildConfig> _buildConfigs;
+        private BuildType _buildType;
+        private bool _onDelete;
 
         public event Action<BuildType> OnSelectedBuild;
+        public event Action OnDeleteBuild;
 
         public void Init(List<BuildConfig> buildConfigs)
         {
@@ -43,17 +48,18 @@ namespace UI
 
         private void SelectBuild(BuildType buildType)
         {
-            OnSelectedBuild?.Invoke(buildType);
+           _buildType = buildType;
         }
 
         private void DeleteBuild()
         {
-            
+           OnDeleteBuild?.Invoke();
+            _buildViewList.ForEach(x=>x.UnClicked());
         }
-
         private void InstallBuild()
         {
-            
+            _buildViewList.ForEach(x=>x.UnClicked());
+            OnSelectedBuild?.Invoke(_buildType);
         }
 
         public void Dispose()

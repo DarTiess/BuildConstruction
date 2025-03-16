@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuildSettings:
     _buildConfigs:
-    - _icon: {fileID: 21300000, guid: 7cc3590aae4bfd74fa199fece6e0c26d, type: 3}
-      _type: 0
-    - _icon: {fileID: 21300000, guid: 5cb029aab0fa27144a51693e87da6a79, type: 3}
+    - _icon: {fileID: 21300096, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
       _type: 1
-    - _icon: {fileID: 21300000, guid: c675899e3780b9f45a9105c6b1c131a5, type: 3}
+    - _icon: {fileID: 21300114, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+      _type: 0
+    - _icon: {fileID: 21300092, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
       _type: 2

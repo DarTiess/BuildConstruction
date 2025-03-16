@@ -1,7 +1,7 @@
 ﻿using System;
+using Build;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Card
 {
@@ -10,103 +10,43 @@ namespace Card
     {
         private SpriteRenderer _spriteRenderer;
         private GroundConfig _config;
-        private Vector2 _mousePosition;
-        private float _offsetX;
-        private float _offsetY;
-        private bool _isSelected;
-        private Camera _camera;
-        private Sprite _currenIcon;
-        private bool _onComparing;
-        private Vector3 _startPosition;
-        private float _animateDuration;
+        private bool _isOccupied;
+        private Vector2Int _gridPosition;
+        private Building _building;
 
-        public Sprite CurrentIcon => _currenIcon;
-        public event Action GroundUpgrade;
+        public bool IsOccupied => _isOccupied;
 
-        public event Action<int, BuildType> CollectCard;
+        public event Action<Vector2Int, BuildType> BuildFinished;
 
-        private void OnMouseDown()
-        {
-            _isSelected = false;
-            Vector3 mousePos = Mouse.current.position.ReadValue();   
-            mousePos.z=_camera.nearClipPlane;
-            _offsetX = _camera.ScreenToWorldPoint( mousePos).x-transform.position.x;
-            _offsetY = _camera.ScreenToWorldPoint(mousePos).y-transform.position.y;
-        }
-
-        private void OnMouseDrag()
-        {
-            Vector3 mousePos = Mouse.current.position.ReadValue();
-            mousePos.z=_camera.nearClipPlane;
-            _mousePosition = _camera.ScreenToWorldPoint(mousePos);
-            transform.position = new Vector3(_mousePosition.x -_offsetX, _mousePosition.y-_offsetY);
-        }
-
-        private void OnMouseUp()
-        {
-            _isSelected = true;
-        }
-
-        private void OnTriggerStay2D(Collider2D other)
-        {
-            if (other.TryGetComponent(out Ground card) && _isSelected && !_onComparing)
-            {
-              //  TryMergeCard(ground);
-            }
-        }
-
-        public void Initialize(GroundConfig config)
+        public void Initialize(GroundConfig config, Vector2Int gridPosition)
         {
             _config = config;
-            // _animateDuration = config.AnimateDuration;
+            _gridPosition = gridPosition;
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _camera=Camera.main;
-            _startPosition = transform.position;
-            _onComparing = false;
             _spriteRenderer.sprite = _config.Icon;
+            _isOccupied = false;
         }
 
-        public void HideCard()
+        public void SetOccupied(Building building)
         {
-            transform.DOScale(Vector3.zero, _animateDuration).SetEase(Ease.InBounce)
-                .OnComplete(() =>
-                {
-                    // CollectCard?.Invoke(_config.Price, _config.BuildType);
-                    gameObject.SetActive(false);
-                });
+            _isOccupied = true;
+            _building = building;
+            _spriteRenderer.DOColor(Color.white, 0.5f).From(Color.green);
+            BuildFinished?.Invoke(_gridPosition, building.Type);
         }
 
-        private void TryMergeCard(Ground ground)
+        public void ShowOccupied()
         {
-            if (HasSameConfig(ground.CurrentIcon))
-            {
-                MergeCard(ground);
-            }
-            else
-            {
-                transform.position = _startPosition;
-            }
+            _spriteRenderer.DOColor(Color.white, 0.5f).From(Color.red);
         }
 
-        private void MergeCard(Ground ground)
+        public void FreeGround()
         {
-            _onComparing = true;
-            ground.ChangeIconLevel();
-            gameObject.SetActive(false);
-        }
-
-        private void ChangeIconLevel()
-        {
-           GroundUpgrade?.Invoke();
-        }
-
-        private bool HasSameConfig(Sprite icon)
-        {
-            if (gameObject.activeInHierarchy)
-            {
-                return _currenIcon.Equals(icon);
-            }
-            return false;
+            _isOccupied = false;
+            _spriteRenderer.DOColor(Color.white, 0.5f).From(Color.green);
+            _building.Delete();
         }
     }
+
+   
 }

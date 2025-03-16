@@ -4,6 +4,6 @@ namespace Grid
 {
     public interface ICardUpgrade
     {
-        event Action CardUpgrade;
+        event Action GroundUpgrade;
     }
 }
