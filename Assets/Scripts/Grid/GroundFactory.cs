@@ -30,6 +30,20 @@ namespace Grid
             _groundPrefab = groundSettings.GroundPrefab;
             _gameObjectGrid = new Ground[_gridSize.x,_gridSize.y];
             _messenger.Sub<CheckGroundForBuilding>(OnCheckGroundForBuilding);
+            _messenger.Sub<PlacedSaved>(OnPlacedSavedBuilding);
+        }
+
+        private void OnPlacedSavedBuilding(PlacedSaved obj)
+        {
+            Vector2Int gridPos = WorldToGridPosition(obj.Position);
+            if (!IsValidGridPosition(gridPos)) 
+                return;
+
+            Ground ground = _gameObjectGrid[gridPos.x, gridPos.y];
+           
+                ground.SetSaved(obj.Build);
+                obj.Build.Place(ground.transform.position, ground.transform);
+            
         }
 
 
@@ -88,9 +102,15 @@ namespace Grid
         {
             var ground =Object.Instantiate(gameObjectPrefab, _gridOrigin);
             ground.BuildFinished += InstallBuilding;
+            ground.RemoveBuild += RemoveBuilding;
             SetObjectAtGridPosition(ground, gridPosition);
             ground.transform.position = GridToWorldPosition(gridPosition);
             return ground;
+        }
+
+        private void RemoveBuilding(Vector2Int position)
+        {
+            _messenger.Pub(new DeleteBuild {Position=position  });
         }
 
         private void InstallBuilding(Vector2Int gridPosition, BuildType type)

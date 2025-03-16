@@ -15,8 +15,10 @@ namespace Build
         private bool _isPlaced;
 
         public BuildType Type => _buildType;
+        public Action<Vector3, Building> PlacedSaves;
 
         public event Action<Vector3, Building> Placed;
+        public event Action<Building> Finished;
 
         private void Update()
         {
@@ -52,12 +54,21 @@ namespace Build
             _isActive = true;
         }
 
+        public void SetSaves(BuildType buildType, Sprite icon, Vector2Int positionBuild)
+        {
+            Debug.Log("SetSaves "+positionBuild.x+", "+positionBuild.y);
+            _buildType = buildType;
+            _spriteRenderer.sprite = icon;
+            PlacedSaves?.Invoke(new Vector3(positionBuild.x,positionBuild.y,0f), this);
+        }
+
         public void Place(Vector3 position, Transform parent)
         {
             _isPlaced = true;
             _collider.enabled = false;
             transform.position = position;
             transform.parent = parent;
+            Finished?.Invoke(this);
         }
 
         public void Delete()

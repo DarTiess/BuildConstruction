@@ -1,6 +1,7 @@
 using System;
 using Build;
 using CameraFollow;
+using CodeBase.Infrastructure;
 using Grid;
 using Infrastructure.Services;
 using UI;
@@ -23,23 +24,32 @@ namespace Infrastructure
         private CamFollow _camera;
         private GroundSettings _groundSettings;
         private BuildFactory _buildFactory;
+        private PersistentData _persistentData;
 
         [Inject]
         public void Construct(MediatorFactory mediatorFactory, Messenger messenger,
-            GroundSettings groundSettings, BuildFactory buildFactory, GroundFactory groundFactory)
+            GroundSettings groundSettings, BuildFactory buildFactory, GroundFactory groundFactory,
+            PersistentData persistentData)
         {
             _mediatorFactory = mediatorFactory;
             _messenger = messenger;
             _groundSettings = groundSettings;
             _buildFactory = buildFactory;
             _groundFactory = groundFactory;
+            _persistentData = persistentData;
         }
         private void Awake()
         {
+            InitPersistenData();
             CreateUiRoot();
             SetCameraPosition();
+            CreateGroundFactory();
             InitBuildFactory();
-            CreateCardSpawner();
+        }
+
+        private void InitPersistenData()
+        {
+            _persistentData.Initialize();
         }
 
         private void SetCameraPosition()
@@ -48,7 +58,7 @@ namespace Infrastructure
             _camera.Init(_groundSettings.GridSize);
         }
 
-        private void CreateCardSpawner()
+        private void CreateGroundFactory()
         {
             _groundFactory.Init(_gridOrigin);
         }

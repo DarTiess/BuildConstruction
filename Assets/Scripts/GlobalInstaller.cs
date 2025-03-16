@@ -1,4 +1,5 @@
 using Build;
+using CodeBase.Infrastructure;
 using Grid;
 using Infrastructure.Services;
 using UnityEngine;
@@ -13,5 +14,6 @@ public class GlobalInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<GroundFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<MediatorFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<BuildFactory>().AsSingle();
+        Container.BindInterfacesAndSelfTo<PersistentData>().AsSingle();
     }
 }

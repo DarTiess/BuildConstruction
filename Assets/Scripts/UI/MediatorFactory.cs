@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace Infrastructure.Services
 {
-    public class MediatorFactory : IService
+    public class MediatorFactory 
 	{
 		private const string AdditionalPath = "GameData/UI/";
 		private readonly Dictionary<Type, IMediator> _mediators;

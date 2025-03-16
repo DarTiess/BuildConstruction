@@ -17,6 +17,7 @@ namespace Card
         public bool IsOccupied => _isOccupied;
 
         public event Action<Vector2Int, BuildType> BuildFinished;
+        public event Action<Vector2Int> RemoveBuild;
 
         public void Initialize(GroundConfig config, Vector2Int gridPosition)
         {
@@ -44,7 +45,15 @@ namespace Card
         {
             _isOccupied = false;
             _spriteRenderer.DOColor(Color.white, 0.5f).From(Color.green);
+            RemoveBuild?.Invoke(_gridPosition);
             _building.Delete();
+        }
+
+        public void SetSaved(Building objBuild)
+        {
+            _isOccupied = true;
+            _building = objBuild;
+            _spriteRenderer.DOColor(Color.white, 0.5f).From(Color.green);
         }
     }
 

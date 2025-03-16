@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Build;
 using Card;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UI
