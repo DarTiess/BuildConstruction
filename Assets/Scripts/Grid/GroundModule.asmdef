@@ -1,0 +1,21 @@
+{
+    "name": "GroundModule",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9d49a5e2980c033409d4dafcca3d8fa6",
+        "GUID:cb75baf2c4a7923449416c0440b206be",
+        "GUID:9bd68ba3186a9c245bebb4c1064084e3",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:850e89c2b5fec84478ee5542ff82243d",
+        "GUID:74be1fc16c8a31d44aa151803e27f27b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

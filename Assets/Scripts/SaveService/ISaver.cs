@@ -1,4 +1,4 @@
-﻿namespace CodeBase.Infrastructure.SaveService
+﻿namespace SaveService
 {
     public interface ISaver
     {

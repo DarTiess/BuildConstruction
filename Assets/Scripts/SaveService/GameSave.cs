@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Card;
+using Data;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace CodeBase.Infrastructure
+namespace SaveService
 {
 	[Serializable]
 	public class GameSave
 	{
-		
-		
 		[JsonConverter(typeof(DictionaryConverter))]
 		public Dictionary<Vector2Int, BuildType> BuildMap = new();
 	}

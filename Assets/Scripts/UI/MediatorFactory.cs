@@ -1,19 +1,20 @@
-using System.Collections.Generic;
-using UI;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using BuildingObjects;
+using Messenger;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Infrastructure.Services
+namespace UI
 {
-    public class MediatorFactory 
+	public class MediatorFactory : IMediatorFactory
 	{
 		private const string AdditionalPath = "GameData/UI/";
 		private readonly Dictionary<Type, IMediator> _mediators;
 		private Transform _parent;
 		private readonly Dictionary<string, Object> _completedCashe = new();
-		private Messenger _messenger;
+		private IMessenger _messenger;
 		private readonly BuildSettings _buildSettings;
 
 
@@ -21,6 +22,12 @@ namespace Infrastructure.Services
 		{
 			_buildSettings = buildSettings;
 			_mediators = new Dictionary<Type, IMediator>();
+		}
+
+		public void Init(Transform canvas, IMessenger messenger )
+		{
+			_parent = canvas;
+			_messenger = messenger;
 		}
 
 		public async Task<TMediator> Get<TMediator>() where TMediator : MonoBehaviour, IMediator
@@ -37,7 +44,18 @@ namespace Infrastructure.Services
 			return instance;
 		}
 
-		public async Task<T> Load<T>(string address) where T : Object
+		public async Task Show<TMediator>(bool suppressAllWindows = false) where TMediator : MonoBehaviour, IMediator
+		{
+			var result = await Get<TMediator>();
+			foreach (var mediatorPair in _mediators)
+			{
+				mediatorPair.Value.Hide();
+			}
+			
+			result.Show();
+		}
+
+		private async Task<T> Load<T>(string address) where T : Object
 		{
 			if (_completedCashe.TryGetValue(address, out Object loadedObject))
 				return loadedObject as T;
@@ -58,6 +76,7 @@ namespace Infrastructure.Services
 
 			return tcs.Task;
 		}
+
 		private void InitMediator<TMediator>(TMediator instance) where TMediator : MonoBehaviour, IMediator
 		{
 			switch (instance)
@@ -71,29 +90,12 @@ namespace Infrastructure.Services
 			}
 		}
 
-		public async Task Show<TMediator>(bool suppressAllWindows = false) where TMediator : MonoBehaviour, IMediator
-		{
-			var result = await Get<TMediator>();
-			foreach (var mediatorPair in _mediators)
-			{
-				mediatorPair.Value.Hide();
-			}
-			
-			result.Show();
-		}
-		
 
 		private void CleanUp(IMediator mediator)
 		{
 			mediator.OnCleanUp -= CleanUp;
 			if (_mediators.ContainsKey(mediator.GetType()))
 				_mediators.Remove(mediator.GetType());
-		}
-
-		public void Init(Transform canvas, Messenger messenger )
-		{
-			_parent = canvas;
-			_messenger = messenger;
 		}
 	}
 }

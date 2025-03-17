@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Card;
-using CodeBase.Infrastructure.SaveService;
-using Infrastructure.Services;
-using Infrastructure.Services.Messeges;
+using Data;
+using Messeges;
+using Messenger;
 using Newtonsoft.Json;
 using UnityEngine;
 using Formatting = System.Xml.Formatting;
 
 
-namespace CodeBase.Infrastructure
+namespace SaveService
 {
-    public class PersistentData : ISaveHandler, ILoadHandler, IDisposable
+    public class PersistentData : ISaveHandler, ILoadHandler, IDisposable, IPersistentData
     {
         private GameSave _gameSave;
-        private readonly Messenger _messenger;
+        private readonly IMessenger _messenger;
         private readonly string _savePath;
 
-        public PersistentData(Messenger messenger)
+        public PersistentData(IMessenger messenger)
         {
             _messenger = messenger;
             _messenger.Sub<BuildInstalled>(BuildPlacedSave);

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Card;
-using Infrastructure.Extension;
-using Infrastructure.Services;
-using Infrastructure.Services.Messeges;
+using Data;
+using Grid.Ground;
+using Messeges;
+using Messenger;
+using UI.Extension;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.HID;
 
 namespace UI
 {
@@ -14,13 +14,13 @@ namespace UI
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private BuildWindow _buildWindow;
-        private Messenger _messenger;
+        private IMessenger _messenger;
         private bool _onDelete;
 
         public event Action<IMediator> OnCleanUp;
         public GameObject GameObject => gameObject;
 
-        public void Construct(List<BuildConfig> buildConfigs, Messenger messenger)
+        public void Construct(List<BuildConfig> buildConfigs, IMessenger messenger)
         {
             _messenger = messenger;
             _buildWindow.Init(buildConfigs);

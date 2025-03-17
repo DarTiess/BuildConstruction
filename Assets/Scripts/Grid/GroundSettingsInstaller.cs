@@ -1,12 +1,15 @@
 using UnityEngine;
 using Zenject;
 
-[CreateAssetMenu(fileName = "GroundSettingsInstaller", menuName = "Installers/GroundSettingsInstaller")]
-public class GroundSettingsInstaller : ScriptableObjectInstaller<GroundSettingsInstaller>
+namespace Grid
 {
-    public GroundSettings GroundSettings;
-    public override void InstallBindings()
+    [CreateAssetMenu(fileName = "GroundSettingsInstaller", menuName = "Installers/GroundSettingsInstaller")]
+    public class GroundSettingsInstaller : ScriptableObjectInstaller<GroundSettingsInstaller>
     {
-        Container.BindInstance(GroundSettings);
+        public GroundSettings GroundSettings;
+        public override void InstallBindings()
+        {
+            Container.BindInstance(GroundSettings);
+        }
     }
 }

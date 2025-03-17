@@ -5,7 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Infrastructure.Extension
+namespace UI.Extension
 {
    public static class CanvasGroupExtension
 	{
@@ -26,20 +26,7 @@ namespace Infrastructure.Extension
 			                                                                   && x != WindowAnimationType.Random)
 		                                                                   .ToList();
 		private static readonly Random random = new();
-
-		public static void Set(this CanvasGroup canvasGroup, float alpha, bool interactable, bool blocksRaycasts)
-		{
-			canvasGroup.alpha = alpha;
-			canvasGroup.interactable = interactable;
-			canvasGroup.blocksRaycasts = blocksRaycasts;
-		}
-
-		/// <param name="canvasGroup"></param>
-		/// <param name="duration">Duration of fading in, cannot be negative</param>
-		/// <param name="delay">Delay before canvas group show, cannot be negative</param>
-		/// <param name="callback"></param>
-		/// <param name="rectTuple"></param>
-		/// <param name="animationType"></param>
+		
 		public static void Show(this CanvasGroup canvasGroup,
 		                        float duration = 0,
 		                        float delay = 0,
@@ -70,13 +57,6 @@ namespace Infrastructure.Extension
 				           callback?.Invoke();
 			           });
 		}
-
-		/// <param name="canvasGroup"></param>
-		/// <param name="duration">Duration of fading out, cannot be negative</param>
-		/// <param name="delay">Delay before canvas group hide, cannot be negative</param>
-		/// <param name="callback"></param>
-		/// <param name="rectTuple"></param>
-		/// <param name="animationType"></param>
 		public static void Hide(this CanvasGroup canvasGroup,
 		                        float duration = 0,
 		                        float delay = 0,
@@ -205,12 +185,6 @@ namespace Infrastructure.Extension
 			rectTransform.transform.localScale = Vector3.one;
 			rectTransform.DOKill();
 			rectTransform.DOMove(to, duration).From(from).SetLink(rectTransform.gameObject).SetUpdate(true);
-		}
-
-		public static bool IsActive(this CanvasGroup canvasGroup)
-		{
-			var isActive = Mathf.Approximately(canvasGroup.alpha, 1f);
-			return isActive;
 		}
 	}
 }

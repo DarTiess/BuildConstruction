@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Build;
-using Card;
+using Data;
 using UnityEngine;
 using UnityEngine.UI;
 

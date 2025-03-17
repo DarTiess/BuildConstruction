@@ -1,0 +1,18 @@
+{
+    "name": "SaverModule",
+    "rootNamespace": "",
+    "references": [
+        "GUID:850e89c2b5fec84478ee5542ff82243d",
+        "GUID:9d49a5e2980c033409d4dafcca3d8fa6",
+        "GUID:cb75baf2c4a7923449416c0440b206be"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

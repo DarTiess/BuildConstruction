@@ -1,7 +1,8 @@
 ﻿using System;
-using Card;
-using Infrastructure.Services;
-using Infrastructure.Services.Messeges;
+using Data;
+using Grid.Ground;
+using Messeges;
+using Messenger;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -9,18 +10,18 @@ using Random = UnityEngine.Random;
 namespace Grid
 {
     [Serializable]
-    public class GroundFactory: IDisposable
+    public class GroundFactory: IDisposable, IGroundFactory
     {
         private Transform _gridOrigin;
-        private Ground[,] _gameObjectGrid;
+        private Ground.Ground[,] _gameObjectGrid;
         private Vector2Int _gridSize;
         private float _cellSize;
         private float _cellSpacing;
-        private Ground _groundPrefab;
+        private Ground.Ground _groundPrefab;
         private GroundConfig[] _configs;
-        private readonly Messenger _messenger;
+        private readonly IMessenger _messenger;
 
-        public GroundFactory(GroundSettings groundSettings, Messenger messenger)
+        public GroundFactory(GroundSettings groundSettings, IMessenger messenger)
         {
             _messenger = messenger;
             _configs = groundSettings.GroundConfig;
@@ -28,9 +29,15 @@ namespace Grid
             _cellSize = groundSettings.CellSize;
             _cellSpacing = groundSettings.CellSpacing;
             _groundPrefab = groundSettings.GroundPrefab;
-            _gameObjectGrid = new Ground[_gridSize.x,_gridSize.y];
+            _gameObjectGrid = new Ground.Ground[_gridSize.x,_gridSize.y];
             _messenger.Sub<CheckGroundForBuilding>(OnCheckGroundForBuilding);
             _messenger.Sub<PlacedSaved>(OnPlacedSavedBuilding);
+        }
+
+        public void Init(Transform gridOrigin)
+        {
+            _gridOrigin = gridOrigin;
+            FillGrid();
         }
 
         private void OnPlacedSavedBuilding(PlacedSaved obj)
@@ -39,7 +46,7 @@ namespace Grid
             if (!IsValidGridPosition(gridPos)) 
                 return;
 
-            Ground ground = _gameObjectGrid[gridPos.x, gridPos.y];
+            Ground.Ground ground = _gameObjectGrid[gridPos.x, gridPos.y];
            
                 ground.SetSaved(obj.Build);
                 obj.Build.Place(ground.transform.position, ground.transform);
@@ -47,19 +54,13 @@ namespace Grid
         }
 
 
-        public void Init(Transform gridOrigin)
-        {
-            _gridOrigin = gridOrigin;
-            FillGrid();
-        }
-
         private void OnCheckGroundForBuilding(CheckGroundForBuilding obj)
         {
             Vector2Int gridPos = WorldToGridPosition(obj.Position);
             if (!IsValidGridPosition(gridPos)) 
                 return;
 
-            Ground ground = _gameObjectGrid[gridPos.x, gridPos.y];
+            Ground.Ground ground = _gameObjectGrid[gridPos.x, gridPos.y];
             if (!ground.IsOccupied)
             {
                 ground.SetOccupied(obj.Build);
@@ -91,14 +92,14 @@ namespace Grid
             {
                 for (int y = 0; y < _gridSize.y; y++)
                 {
-                    Ground ground = SpawnObjectAtGridPosition(_groundPrefab, new Vector2Int(x, y));
+                    Ground.Ground ground = SpawnObjectAtGridPosition(_groundPrefab, new Vector2Int(x, y));
                     int rndConfig = Random.Range(0, _configs.Length);
                     ground.Initialize(_configs[rndConfig], new Vector2Int(x, y));
                 }
             }
         }
 
-        private Ground SpawnObjectAtGridPosition(Ground gameObjectPrefab, Vector2Int gridPosition)
+        private Ground.Ground SpawnObjectAtGridPosition(Ground.Ground gameObjectPrefab, Vector2Int gridPosition)
         {
             var ground =Object.Instantiate(gameObjectPrefab, _gridOrigin);
             ground.BuildFinished += InstallBuilding;
@@ -118,21 +119,7 @@ namespace Grid
             _messenger.Pub(new BuildInstalled(gridPosition, type));
         }
 
-        private bool HasObjectAtGridPosition(Vector2Int gridPosition)
-        {
-            return _gameObjectGrid[gridPosition.x, gridPosition.y].gameObject.activeInHierarchy;
-        }
-
-        private void SpawnObjectAtFreePosition( Vector2Int gridPosition, GroundConfig config)
-        {
-            var instance = _gameObjectGrid[gridPosition.x, gridPosition.y];
-            instance.gameObject.SetActive(true);
-            SetObjectAtGridPosition(instance, gridPosition);
-            instance.transform.position = GridToWorldPosition(gridPosition);
-            instance.Initialize(config, new Vector2Int(gridPosition.x, gridPosition.y));
-        }
-
-        private void SetObjectAtGridPosition(Ground gameObject, Vector2Int gridPosition)
+        private void SetObjectAtGridPosition(Ground.Ground gameObject, Vector2Int gridPosition)
         {
             _gameObjectGrid[gridPosition.x, gridPosition.y] = gameObject;
             gameObject.transform.position = GridToWorldPosition(gridPosition);
@@ -143,20 +130,7 @@ namespace Grid
             var offset = _gridOrigin.position;
             return (new Vector3(gridPosition.x * (_cellSize + _cellSpacing), gridPosition.y * (_cellSize + _cellSpacing)) + offset);
         }
-
-        private bool HasEmptyGridPositions()
-        {
-            foreach (var gameObject in _gameObjectGrid)
-            {
-                if (!gameObject.gameObject.activeInHierarchy)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
+        
         public void Dispose()
         {
             _messenger.Unsub<CheckGroundForBuilding>(OnCheckGroundForBuilding);

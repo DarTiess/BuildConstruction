@@ -1,16 +1,14 @@
-using Build;
-using CodeBase.Infrastructure;
+using BuildingObjects;
 using Grid;
-using Infrastructure.Services;
-using UnityEngine;
+using SaveService;
+using UI;
 using Zenject;
 
 public class GlobalInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<ServiceLocator>().AsSingle();
-        Container.BindInterfacesAndSelfTo<Messenger>().AsSingle();
+        Container.BindInterfacesAndSelfTo<Messenger.Messenger>().AsSingle();
         Container.BindInterfacesAndSelfTo<GroundFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<MediatorFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<BuildFactory>().AsSingle();

@@ -1,9 +1,9 @@
 ﻿using System;
-using Build;
+using Data;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Card
+namespace Grid.Ground
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class Ground : MonoBehaviour

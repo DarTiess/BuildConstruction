@@ -1,5 +1,5 @@
 using System;
-using Card;
+using Data;
 using UnityEngine;
 using UnityEngine.UI;
 

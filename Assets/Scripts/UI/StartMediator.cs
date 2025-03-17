@@ -1,5 +1,5 @@
 using System;
-using Infrastructure.Extension;
+using UI.Extension;
 using UnityEngine;
 
 namespace UI

@@ -1,17 +1,14 @@
 using System;
-using Infrastructure.Services;
-using UnityEngine;
-
 
 namespace UI
 {
     public class UIRoot: IDisposable
     {
-	    private MediatorFactory _mediatorFactory;
+	    private IMediatorFactory _mediatorFactory;
 	    private StartMediator _startMediator;
 	    private BuildMediator _buildMediator;
 
-	    public UIRoot(MediatorFactory mediatorFactory)
+	    public UIRoot(IMediatorFactory mediatorFactory)
 		{
 			_mediatorFactory = mediatorFactory;
 		}
